@@ -194,7 +194,7 @@ const HomepageEcosystem = ({ featuredItems }) => (
     <SubTitle>Some of our recent favorites</SubTitle>
     <FeaturedItems className={SCROLLER_CLASSNAME}>
       <FeaturedItemsList>
-        {featuredItems.map(item => {
+        {featuredItems.filter(e => Boolean(e)).map(item => {
           const { slug } = item
           return <FeaturedItem key={slug} item={item} />
         })}
