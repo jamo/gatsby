@@ -7,6 +7,8 @@ const { join, sep } = require(`path`)
 const isDocker = require(`is-docker`)
 const showAnalyticsNotification = require(`./showAnalyticsNotification`)
 const lodash = require(`lodash`)
+const dbEngine = `redux`
+
 import {
   getRepositoryId as _getRepositoryId,
   IRepositoryId,
@@ -198,7 +200,7 @@ module.exports = class AnalyticsTracker {
     this.buildAndStoreEvent(eventType, tags)
   }
 
-  buildAndStoreEvent(eventType, tags) {
+  buildAndStoreEvent(eventType, tags): void {
     const event = {
       installedGatsbyVersion: this.installedGatsbyVersion,
       gatsbyCliVersion: this.gatsbyCliVersion,
@@ -210,15 +212,12 @@ module.exports = class AnalyticsTracker {
       componentId: `gatsby-cli`,
       osInformation: this.getOsInfo(),
       componentVersion: this.componentVersion,
-      dbEngine: this.getDbEngine(),
+      dbEngine,
       ...this.getRepositoryId(),
     }
     this.store.addEvent(event)
   }
 
-  getDbEngine() {
-    return `redux`
-  }
 
   getMachineId(): UUID {
     // Cache the result
