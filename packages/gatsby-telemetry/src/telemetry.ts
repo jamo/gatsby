@@ -99,7 +99,7 @@ module.exports = class AnalyticsTracker {
     return undefined
   }
 
-  getGatsbyCliVersion() {
+  getGatsbyCliVersion(): SemVer {
     try {
       const jsonfile = join(
         require
@@ -116,7 +116,7 @@ module.exports = class AnalyticsTracker {
     }
     return undefined
   }
-  captureEvent(type = ``, tags = {}, opts = { debounce: false }) {
+  captureEvent(type = ``, tags = {}, opts = { debounce: false }): void {
     if (!this.isTrackingEnabled()) {
       return
     }
@@ -144,7 +144,7 @@ module.exports = class AnalyticsTracker {
     this.buildAndStoreEvent(eventType, lodash.merge({}, tags, decoration))
   }
 
-  captureError(type, tags = {}) {
+  captureError(type, tags = {}): void {
     if (!this.isTrackingEnabled()) {
       return
     }
@@ -156,7 +156,7 @@ module.exports = class AnalyticsTracker {
     this.formatErrorAndStoreEvent(eventType, lodash.merge({}, tags, decoration))
   }
 
-  captureBuildError(type, tags = {}) {
+  captureBuildError(type, tags = {}): void {
     if (!this.isTrackingEnabled()) {
       return
     }
@@ -167,7 +167,7 @@ module.exports = class AnalyticsTracker {
     this.formatErrorAndStoreEvent(eventType, lodash.merge({}, tags, decoration))
   }
 
-  formatErrorAndStoreEvent(eventType, tags) {
+  formatErrorAndStoreEvent(eventType, tags): void {
     if (tags.error) {
       // `error` ought to have been `errors` but is `error` in the database
       if (Array.isArray(tags.error)) {
