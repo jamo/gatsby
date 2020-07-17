@@ -28,6 +28,18 @@ interface IOSInfo {
   docker: boolean | undefined
 }
 
+interface IAggregateStats {
+  count: number
+  min: number
+  max: number
+  sum: number
+  mean: number
+  median: number
+  stdDev: number
+  skewness: number
+
+}
+
 module.exports = class AnalyticsTracker {
   store = new EventStorage()
   debouncer = {}
@@ -218,7 +230,6 @@ module.exports = class AnalyticsTracker {
     this.store.addEvent(event)
   }
 
-
   getMachineId(): UUID {
     // Cache the result
     if (this.machineId) {
@@ -284,12 +295,12 @@ module.exports = class AnalyticsTracker {
     this.debouncer[source] = now
   }
 
-  decorateNextEvent(event, obj) {
+  decorateNextEvent(event, obj): void {
     const cached = this.metadataCache[event] || {}
     this.metadataCache[event] = Object.assign(cached, obj)
   }
 
-  addSiteMeasurement(event, obj) {
+  addSiteMeasurement(event, obj): void {
     const cachedEvent = this.metadataCache[event] || {}
     const cachedMeasurements = cachedEvent.siteMeasurements || {}
     this.metadataCache[event] = Object.assign(cachedEvent, {
@@ -297,16 +308,16 @@ module.exports = class AnalyticsTracker {
     })
   }
 
-  decorateAll(tags) {
+  decorateAll(tags): void {
     this.defaultTags = Object.assign(this.defaultTags, tags)
   }
 
-  setTelemetryEnabled(enabled: boolean) {
+  setTelemetryEnabled(enabled: boolean): void {
     this.trackingEnabled = enabled
     this.store.updateConfig(`telemetry.enabled`, enabled)
   }
 
-  aggregateStats(data) {
+  aggregateStats(data): IAggregateStats {
     const sum = data.reduce((acc, x) => acc + x, 0)
     const mean = sum / data.length || 0
     const median = data.sort()[Math.floor((data.length - 1) / 2)] || 0
