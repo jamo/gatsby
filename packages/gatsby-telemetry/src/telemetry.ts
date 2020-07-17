@@ -13,7 +13,7 @@ import {
 } from "./repository-id"
 
 type UUID = string
-type SemVer = string
+type SemVer = string | undefined
 
 interface IOSInfo {
   nodeVersion: SemVer
@@ -66,14 +66,14 @@ module.exports = class AnalyticsTracker {
     )
   }
 
-  getRepositoryId(): UUID {
+  getRepositoryId(): IRepositoryId {
     if (!this.repositoryId) {
       this.repositoryId = _getRepositoryId()
     }
     return this.repositoryId
   }
 
-  getTagsFromEnv(): Object {
+  getTagsFromEnv(): Record<string, any> {
     if (process.env.GATSBY_TELEMETRY_TAGS) {
       try {
         return JSON.parse(process.env.GATSBY_TELEMETRY_TAGS)
@@ -84,7 +84,7 @@ module.exports = class AnalyticsTracker {
     return {}
   }
 
-  getGatsbyVersion() {
+  getGatsbyVersion(): SemVer {
     const packageInfo = require(join(
       process.cwd(),
       `node_modules`,
@@ -334,9 +334,9 @@ module.exports = class AnalyticsTracker {
     }
   }
 
-  async sendEvents() {
+  async sendEvents(): Promise<boolean> {
     if (!this.isTrackingEnabled()) {
-      return Promise.resolve()
+      return Promise.resolve(true)
     }
 
     return this.store.sendEvents()
