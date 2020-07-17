@@ -37,7 +37,6 @@ interface IAggregateStats {
   median: number
   stdDev: number
   skewness: number
-
 }
 
 module.exports = class AnalyticsTracker {
@@ -280,7 +279,7 @@ module.exports = class AnalyticsTracker {
     return osInfo
   }
 
-  trackActivity(source) {
+  trackActivity(source): void {
     if (!this.isTrackingEnabled()) {
       return
     }
